@@ -1,0 +1,4 @@
+SANITY_VERSION 1
+TMPDIR /home/abnaby/yocto/build_qemuearm/tmp
+SSTATE_DIR /mnt/d/OJT/projectBase/sstate-cache
+NATIVELSBSTRING ubuntu-20.04
