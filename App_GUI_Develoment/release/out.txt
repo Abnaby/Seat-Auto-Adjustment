@@ -1,0 +1,3 @@
+Argument 0: C:\Users\Abnaby\Desktop\files\release\algorithmAppPath.exe
+Argument 1: 1
+Argument 2: 2
