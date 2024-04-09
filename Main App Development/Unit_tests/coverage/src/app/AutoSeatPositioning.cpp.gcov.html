@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - Application Coverage Report - src/app/AutoSeatPositioning.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">src/app</a> - AutoSeatPositioning.cpp<span style="font-size: 80%;"> (source / <a href="AutoSeatPositioning.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">Application Coverage Report</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2024-04-10 19:08:20</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+</td>
+            <td></td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : </a>
+<span class="lineNum">       2 </span>            : #include &quot;AutoSeatPositioning.hpp&quot;
+<span class="lineNum">       3 </span>            : using namespace std;
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : /************************************************
+<span class="lineNum">       6 </span>            :  ******************* MACROS *******************
+<span class="lineNum">       7 </span>            :  ***********************************************/
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #define MAX_USERS 1
+<span class="lineNum">      11 </span>            : #define FIV_PERCENT_ABOVE(x) (x + ((x) / 2))
+<span class="lineNum">      12 </span>            : #define FIV_PERCENT_BELOW(x) (x - ((x) / 2))
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : #define MAX_ARGC_ARGS 4
+<span class="lineNum">      15 </span>            : #define IN_EDIT_MODE_IDX 1
+<span class="lineNum">      16 </span>            : #define IN_DRIVER_ID_IDX 2
+<span class="lineNum">      17 </span>            : #define IN_WEIGHT_IDX 3
+<span class="lineNum">      18 </span>            : #define IN_HEIGHT_IDX 4
+<span class="lineNum">      19 </span>            : /********************************************************
+<span class="lineNum">      20 </span>            :  ******************* Global Variables *******************
+<span class="lineNum">      21 </span>            :  ********************************************************/
+<span class="lineNum">      22 </span><span class="lineCov">          1 : driver Global_drivers[MAX_USERS];</span>
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : /************************************************
+<a name="25"><span class="lineNum">      25 </span>            :  ******************* STATIC FUNC ****************</a>
+<span class="lineNum">      26 </span>            :  ***********************************************/
+<span class="lineNum">      27 </span><span class="lineCov">          9 : uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max)</span>
+<span class="lineNum">      28 </span>            : {
+<span class="lineNum">      29 </span><span class="lineCov">          9 :     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;</span>
+<span class="lineNum">      30 </span>            : }
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : /************************************************
+<span class="lineNum">      33 </span>            :  ******************* APIs    *******************
+<span class="lineNum">      34 </span>            :  ***********************************************/
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : /**
+<span class="lineNum">      37 </span>            :  * Adjusts the seat position based on the driver's weight and height.
+<span class="lineNum">      38 </span>            :  *
+<span class="lineNum">      39 </span>            :  * @param driver pointer to the driver object
+<span class="lineNum">      40 </span>            :  *
+<span class="lineNum">      41 </span>            :  * @return structure containing the servo signals for height and slide adjustments
+<span class="lineNum">      42 </span>            :  *
+<a name="43"><span class="lineNum">      43 </span>            :  * @throws None</a>
+<span class="lineNum">      44 </span>            :  */
+<span class="lineNum">      45 </span><span class="lineCov">          4 : S_DEG adjustSeat(driver *driver)</span>
+<span class="lineNum">      46 </span>            : {
+<span class="lineNum">      47 </span><span class="lineCov">          4 :     uint16_t Local_u8Weight = driver-&gt;getWeight();</span>
+<span class="lineNum">      48 </span><span class="lineCov">          4 :     uint16_t Local_u8Height = driver-&gt;getHeight();</span>
+<span class="lineNum">      49 </span><span class="lineCov">          4 :     S_DEG Local_ServoSignals = {0, 0}; // Initialize to 0 when creating instance</span>
+<span class="lineNum">      50 </span>            :     // Height adjustment
+<span class="lineNum">      51 </span><span class="lineCov">          4 :     if (Local_u8Height &lt;= MIN_HEIGHT)</span>
+<span class="lineNum">      52 </span>            :     {
+<span class="lineNum">      53 </span><span class="lineCov">          1 :         Local_ServoSignals.ST_HGT_S1 = map(Local_u8Height, MIN_HEIGHT, FIV_PERCENT_BELOW(MIN_HEIGHT), 90, 0);</span>
+<span class="lineNum">      54 </span>            :     }
+<span class="lineNum">      55 </span><span class="lineCov">          3 :     else if (Local_u8Height &gt;= MAX_HEIGHT)</span>
+<span class="lineNum">      56 </span>            :     {
+<span class="lineNum">      57 </span><span class="lineCov">          1 :         Local_ServoSignals.ST_HGT_S1 = map(Local_u8Height, MAX_HEIGHT, FIV_PERCENT_ABOVE(MAX_HEIGHT), 90, 180);</span>
+<span class="lineNum">      58 </span>            :     }
+<span class="lineNum">      59 </span>            :     else
+<span class="lineNum">      60 </span>            :     {
+<span class="lineNum">      61 </span><span class="lineCov">          2 :         Local_ServoSignals.ST_HGT_S1 = 90;</span>
+<span class="lineNum">      62 </span>            :     }
+<span class="lineNum">      63 </span>            :     // Weight adjustment
+<span class="lineNum">      64 </span><span class="lineCov">          4 :     if (Local_u8Weight &lt;= MIN_WEIGHT)</span>
+<span class="lineNum">      65 </span>            :     {
+<span class="lineNum">      66 </span><span class="lineCov">          2 :         Local_ServoSignals.ST_SLD_S2 = map(Local_u8Weight, MIN_WEIGHT, FIV_PERCENT_BELOW(MIN_WEIGHT), 90, 0);</span>
+<span class="lineNum">      67 </span>            :     }
+<span class="lineNum">      68 </span><span class="lineCov">          2 :     else if (Local_u8Weight &gt;= MAX_WEIGHT)</span>
+<span class="lineNum">      69 </span>            :     {
+<span class="lineNum">      70 </span><span class="lineCov">          1 :         Local_ServoSignals.ST_SLD_S2 = map(Local_u8Weight, MAX_WEIGHT, FIV_PERCENT_ABOVE(MAX_WEIGHT), 90, 180);</span>
+<span class="lineNum">      71 </span>            :     }
+<span class="lineNum">      72 </span>            :     else
+<span class="lineNum">      73 </span>            :     {
+<span class="lineNum">      74 </span>            : // No adjustment
+<span class="lineNum">      75 </span><span class="lineCov">          1 :         Local_ServoSignals.ST_SLD_S2 = 90;</span>
+<span class="lineNum">      76 </span>            :     }
+<span class="lineNum">      77 </span>            :     /*  Save Driver Data */
+<span class="lineNum">      78 </span><span class="lineCov">          4 :     driver-&gt;setSeatHeight((uint8_t)Local_ServoSignals.ST_HGT_S1);</span>
+<span class="lineNum">      79 </span><span class="lineCov">          4 :     driver-&gt;setSeatSlide((uint8_t)Local_ServoSignals.ST_SLD_S2);</span>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span>            :     /*  Return Data */
+<span class="lineNum">      82 </span><span class="lineCov">          4 :     return Local_ServoSignals;</span>
+<span class="lineNum">      83 </span>            : }
+<a name="84"><span class="lineNum">      84 </span>            : </a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineCov">          2 : void mainLogic(uint8_t Loc_u8UserId, uint8_t Loc_editMode, uint16_t In_Weight, uint16_t In_Height)</span>
+<span class="lineNum">      87 </span>            : {
+<span class="lineNum">      88 </span><span class="lineCov">          2 :     S_DEG Local_ServoSignals = {0, 0}; // Initialize to 0 when creating instance</span>
+<span class="lineNum">      89 </span><span class="lineCov">          2 :         if (Loc_u8UserId &lt; MAX_USERS)</span>
+<span class="lineNum">      90 </span>            :         {
+<span class="lineNum">      91 </span>            :             /* Play or Edit*/
+<span class="lineNum">      92 </span><span class="lineCov">          1 :             if (Loc_editMode == 1 || Global_drivers[Loc_u8UserId].getSeatSlide() == 0 || Global_drivers[Loc_u8UserId].getSeatHeight() == 0)</span>
+<span class="lineNum">      93 </span>            :             {
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            :                 /* Set Coming Data to Driver ID*/
+<span class="lineNum">      96 </span><span class="lineCov">          1 :                 Global_drivers[Loc_u8UserId].setDriverData(In_Weight, In_Height);</span>
+<span class="lineNum">      97 </span>            :                 /* Adjust Seat */
+<span class="lineNum">      98 </span><span class="lineCov">          1 :                 Local_ServoSignals = adjustSeat(&amp;Global_drivers[Loc_u8UserId]);</span>
+<span class="lineNum">      99 </span>            :                 /*  Perform Servo Action */
+<span class="lineNum">     100 </span>            :             }
+<span class="lineNum">     101 </span>            :             /*  Perform Servo Action */
+<span class="lineNum">     102 </span><span class="lineCov">          1 :             ServoMgr_voidControl(&amp;Local_ServoSignals);</span>
+<span class="lineNum">     103 </span>            :         }
+<span class="lineNum">     104 </span>            :         else
+<span class="lineNum">     105 </span>            :         {
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span>            :         }
+<span class="lineNum">     108 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span>            : /**
+<span class="lineNum">     111 </span>            :  * Checks if the given string represents a valid integer.
+<span class="lineNum">     112 </span>            :  *
+<span class="lineNum">     113 </span>            :  * @param str the input string to be checked
+<span class="lineNum">     114 </span>            :  *
+<span class="lineNum">     115 </span>            :  * @return true if the input string represents a valid integer, false otherwise
+<span class="lineNum">     116 </span>            :  *
+<a name="117"><span class="lineNum">     117 </span>            :  * @note positive int only</a>
+<span class="lineNum">     118 </span>            :  */
+<span class="lineNum">     119 </span><span class="lineCov">         11 : bool is_valid_int(const string &amp;str)</span>
+<span class="lineNum">     120 </span>            : {
+<span class="lineNum">     121 </span><span class="lineCov">         27 :     for (char c : str)</span>
+<span class="lineNum">     122 </span>            :     {
+<span class="lineNum">     123 </span><span class="lineCov">         25 :         if (!isdigit(c))</span>
+<span class="lineNum">     124 </span>            :         {
+<span class="lineNum">     125 </span><span class="lineCov">          9 :             return false;</span>
+<span class="lineNum">     126 </span>            :         }
+<span class="lineNum">     127 </span>            :     }
+<span class="lineNum">     128 </span><span class="lineCov">          2 :     return true;</span>
+<span class="lineNum">     129 </span>            : }
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            : #ifndef UNIT_TEST
+<span class="lineNum">     132 </span>            : int main(int argc, char *argv[])
+<span class="lineNum">     133 </span>            : {
+<span class="lineNum">     134 </span>            :     /*  Get User Number */
+<span class="lineNum">     135 </span>            :     uint8_t Loc_u8UserId = 0;
+<span class="lineNum">     136 </span>            :     uint8_t Loc_editMode = 0;
+<span class="lineNum">     137 </span>            :     uint16_t In_Weight = 0;
+<span class="lineNum">     138 </span>            :     uint16_t In_Height = 0;
+<span class="lineNum">     139 </span>            :     string LOC_argv = &quot;&quot;;
+<span class="lineNum">     140 </span>            : #if ENABLE_DEBUG == 0
+<span class="lineNum">     141 </span>            :     if (argc &gt;= (int)(MAX_ARGC_ARGS+1))
+<span class="lineNum">     142 </span>            :     {
+<span class="lineNum">     143 </span>            :         LOC_argv = argv[IN_DRIVER_ID_IDX];
+<span class="lineNum">     144 </span>            :         if (!is_valid_int(LOC_argv))
+<span class="lineNum">     145 </span>            :         {
+<span class="lineNum">     146 </span>            :             cerr &lt;&lt; &quot;Invalid input&quot; &lt;&lt; endl;
+<span class="lineNum">     147 </span>            :             return 0;
+<span class="lineNum">     148 </span>            :         }
+<span class="lineNum">     149 </span>            :         Loc_u8UserId = stoi(argv[IN_DRIVER_ID_IDX]);
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :         LOC_argv = argv[IN_EDIT_MODE_IDX];
+<span class="lineNum">     152 </span>            :         if (!is_valid_int(LOC_argv))
+<span class="lineNum">     153 </span>            :         {
+<span class="lineNum">     154 </span>            :             cerr &lt;&lt; &quot;Invalid input&quot; &lt;&lt; endl;
+<span class="lineNum">     155 </span>            :             return 0;
+<span class="lineNum">     156 </span>            :         }
+<span class="lineNum">     157 </span>            :         Loc_editMode = stoi(argv[IN_EDIT_MODE_IDX]);
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            :         LOC_argv = argv[IN_WEIGHT_IDX];
+<span class="lineNum">     160 </span>            :         if (!is_valid_int(LOC_argv))
+<span class="lineNum">     161 </span>            :         {
+<span class="lineNum">     162 </span>            :             cerr &lt;&lt; &quot;Invalid input&quot; &lt;&lt; endl;
+<span class="lineNum">     163 </span>            :             return 0;
+<span class="lineNum">     164 </span>            :         }
+<span class="lineNum">     165 </span>            :         In_Weight = stoi(argv[IN_WEIGHT_IDX]);
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            :         LOC_argv = argv[IN_HEIGHT_IDX];
+<span class="lineNum">     168 </span>            :         if (!is_valid_int(LOC_argv))
+<span class="lineNum">     169 </span>            :         {
+<span class="lineNum">     170 </span>            :             cerr &lt;&lt; &quot;Invalid input&quot; &lt;&lt; endl;
+<span class="lineNum">     171 </span>            :             return 0;
+<span class="lineNum">     172 </span>            :         }
+<span class="lineNum">     173 </span>            :         In_Height = stoi(argv[IN_HEIGHT_IDX]);
+<span class="lineNum">     174 </span>            :     }
+<span class="lineNum">     175 </span>            :     else
+<span class="lineNum">     176 </span>            :     {
+<span class="lineNum">     177 </span>            :         cerr &lt;&lt; &quot;Unexpected number of args&quot; &lt;&lt; endl;
+<span class="lineNum">     178 </span>            :         return 0;
+<span class="lineNum">     179 </span>            :     }
+<span class="lineNum">     180 </span>            : #endif
+<span class="lineNum">     181 </span>            :     ServoMgr_voidInit();
+<span class="lineNum">     182 </span>            :     mainLogic(Loc_u8UserId, Loc_editMode, In_Weight, In_Height);
+<span class="lineNum">     183 </span>            :     return 1;
+<span class="lineNum">     184 </span>            : }
+<span class="lineNum">     185 </span>            : #endif
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            : #ifdef UNIT_TEST
+<span class="lineNum">     188 </span>            : #include &quot;app_test_call.hpp&quot;
+<span class="lineNum">     189 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
