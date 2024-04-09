@@ -7,20 +7,71 @@
 #include <QIntValidator>
 #include <QProcess>
 #include <QMessageBox>
+#include <QTimer>
 
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG 0
+
 #if ENABLE_DEBUG == 1
 #include <QFile>
 #include <QTextStream>
-#endif 
-#define NEW_APP_PATH  "C:/Users/Abnaby/Desktop/files/release/algorithmAppPath.exe"
-static void startAlgoApp(QString weightStr , QString heightStr);
+#endif
+/************************************************
+ ******************* MACROS *******************
+ ***********************************************/
+#define IN_EDIT_MODE_IDX 1
+#define IN_DRIVER_ID_IDX 2
+#define IN_WEIGHT_IDX 3
+#define IN_HEIGHT_IDX 4
+#define NEW_APP_PATH  "D:/OJT/0.Repo/App_GUI_Develoment/release/algorithmAppPath.exe"
 
+#define DELAY_TIME 3000
+
+/************************************************
+ ******************* STATIC VAR ****************
+ ***********************************************/
+static QTimer timer;
+
+/************************************************
+ ******************* STATIC FUNC ****************
+ ***********************************************/
+static void startAlgoApp(QString weightStr, QString heightStr);
+
+static void confirmationMsg()
+{
+    // Set up the timer if it's not already running
+    if (!timer.isActive()) {
+        // Set a timeout of DELAY_TIME milliseconds
+        timer.setSingleShot(true);
+        timer.start(DELAY_TIME);
+    }
+
+    // Connect the timer's timeout signal to a lambda function
+    QObject::connect(&timer, &QTimer::timeout, [&]() {
+        // Create a QMessageBox
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.setText("Seat positioning is completed");
+        msgBox.setInformativeText("Is the new position suitable?");
+        msgBox.addButton("Everything OK", QMessageBox::AcceptRole);
+        msgBox.addButton("Control it Manually", QMessageBox::RejectRole);
+        int ret = msgBox.exec();
+
+        // Check which button the user clicked
+        if (ret == QMessageBox::AcceptRole || ret == QMessageBox::RejectRole) {
+            // Quit the application
+            QCoreApplication::quit();
+        }
+    });
+}
+
+/************************************************
+ ******************* APP ************************
+ ***********************************************/
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     // Fonts
-    QFont UsedFonts ;
+    QFont UsedFonts;
     UsedFonts.setPixelSize(25);
     // Create main window
     QWidget mainWindow;
@@ -39,9 +90,9 @@ int main(int argc, char *argv[])
     weightInput.setFont(UsedFonts);
     weightInput.setValidator(new QIntValidator(0, 99999, &weightInput)); // Accept integers between 0 and 99999
     QLabel heightLabel("Height:");
-     heightLabel.setFont(UsedFonts);
+    heightLabel.setFont(UsedFonts);
     QLineEdit heightInput;
-     heightInput.setFont(UsedFonts);
+    heightInput.setFont(UsedFonts);
     heightInput.setValidator(new QIntValidator(0, 99999, &heightInput)); // Accept integers between 0 and 99999
 
     // Create button
@@ -56,42 +107,45 @@ int main(int argc, char *argv[])
     layout.addWidget(&BTN_startProcess);
 
     // Connect button click signal
-    QObject::connect(&BTN_startProcess, &QPushButton::clicked, [&]() {
+    QObject::connect(&BTN_startProcess, &QPushButton::clicked, [&]()
+                     {
         // Retrieve weight and height values
         QString weight = weightInput.text();
         QString height = heightInput.text();
         if (weight.isEmpty() || height.isEmpty()) {
-            #if ENABLE_DEBUG == 1
+#if ENABLE_DEBUG == 1
             qDebug() << "Invalid Inputs\n";
-            #endif
+#endif
             return;
         }
         else
         {
-            #if ENABLE_DEBUG == 1
+#if ENABLE_DEBUG == 1
             qDebug() << "Weight:" << weight;
             qDebug() << "Height:" << height;
-            #endif
+#endif
         }
-        startAlgoApp(weight,height);    
-    });
+        startAlgoApp(weight,height); });
     // Show the main window
     mainWindow.show();
 
     return app.exec();
 }
 
-void startAlgoApp(QString weightStr , QString heightStr)
+void startAlgoApp(QString weightStr, QString heightStr)
 {
     // Convert string values to integers
     int weight = weightStr.toInt();
     int height = heightStr.toInt();
     // Start the algorithm application with the provided inputs using QProcess
-    QString algorithmAppPath = NEW_APP_PATH; 
+    QString algorithmAppPath = NEW_APP_PATH;
     QStringList arguments;
-    arguments << QString::number(weight) << QString::number(height); // Pass weight and height as arguments
+    //          IN_EDIT_MODE_IDX  IN_DRIVER_ID_IDX  IN_WEIGHT_IDX           IN_HEIGHT_IDX
+    arguments << QString::number(1) << QString::number(0) << QString::number(weight) << QString::number(height);
+
     bool started = QProcess::startDetached(algorithmAppPath, arguments);
-    if (started) {
+    if (started)
+    {
         // If the process started successfully, wait for it to finish
         // This approach might block the main thread, consider using QProcess::start instead
         QProcess process;
@@ -99,27 +153,36 @@ void startAlgoApp(QString weightStr , QString heightStr)
         process.waitForFinished();
         // Get the exit code of the process
         int exitCode = process.exitCode();
-       if (exitCode == 0) {
+        if (exitCode == 0)
+        {
             // If exit code is 0, show a popup window indicating operation failed
             QMessageBox::critical(nullptr, "Operation Failed", "The operation failed.");
+            // show options [LATER ADDSON]
         }
-        #if ENABLE_DEBUG == 1
-            // Write the exit code to a file
-            QFile file("exit_code.txt");
-            if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                QTextStream out(&file);
-                out << exitCode;
-                file.close();
-            } else {
-                qDebug() << "Failed to open file for writing";
-            }
-        #endif  
+        else
+        {
+            confirmationMsg();
+        }
+#if ENABLE_DEBUG == 1
+        // Write the exit code to a file
+        QFile file("exit_code.txt");
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QTextStream out(&file);
+            out << exitCode;
+            file.close();
+        }
+        else
+        {
+            qDebug() << "Failed to open file for writing";
+        }
+#endif
     }
     else
     {
-        QMessageBox::critical(nullptr, "Process Error", "Failed to start the process.");    
+        QMessageBox::critical(nullptr, "Process Error", "Failed to start the process.");
     }
-    #if ENABLE_DEBUG == 1
-        qDebug() << "Failed to start the process";
-    #endif 
+#if ENABLE_DEBUG == 1
+    qDebug() << "Failed to start the process";
+#endif
 }
