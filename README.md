@@ -21,7 +21,7 @@ This project is a component of my on-the-job training at SeiTech Solutions. proj
 ```
 This repository contains the following directories:
 - `App_GUI_Development`: Directory for developing the graphical user interface `(GUI)` application based on `QT5` and run it through windows machine.
-- `Main App Development`: 
+- `App Development`: 
     - Directory for developing the `main application` logic 
     -  Directory for unit tests on application based on `gtest` framework.
 - `Yocto Project Quick Start`: Contains labs and resources for quickly getting started with the Yocto Project, including guides for different aspects like layers, graphics, and utilizing `so` libs.
@@ -85,4 +85,14 @@ can find full unit test report from [HERE](./Main%20App%20Development/Unit_tests
 
 
 
-### Project Details 
+### OUTPUT
+
+> Weston gui
+![weston output](./assets/weston.PNG)
+
+> QT5
+![QT5 output](./assets/weston.PNG)
+
+
+## Contributing  
+Bug reports, feature requests, and so on are always welcome. Feel free to leave a note in the Issues section.
