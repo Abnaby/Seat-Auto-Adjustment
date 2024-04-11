@@ -1,7 +1,32 @@
 # Seat-Auto-Adjustment
 ## Project Objective 
-the project is a part of on job training at SeiTech Solutions, The project aims to be get familiar with embedded linux and yocto project.
+This project is a component of my on-the-job training at SeiTech Solutions. project primary objective is to gain familiarity with embedded Linux and the Yocto Project.
 
+## Repo Tree 
+```sh
+.
+├── App_GUI_Develoment
+├── Main App Development
+│   ├── application Development
+│   └── Unit_tests
+├── README.md
+├── Yocto Project Quick Start
+│   ├── LAB2_Layers
+│   ├── LAB3_Graphics
+│   ├── LAB4_WiringPi
+│   ├── Lab1_Getting Start With Yocto Project
+│   └── README.md
+├── assets
+└── rpi_projectBuild
+```
+This repository contains the following directories:
+- `App_GUI_Development`: Directory for developing the graphical user interface `(GUI)` application based on `QT5` and run it through windows machine.
+- `Main App Development`: 
+    - Directory for developing the `main application` logic 
+    -  Directory for unit tests on application based on `gtest` framework.
+- `Yocto Project Quick Start`: Contains labs and resources for quickly getting started with the Yocto Project, including guides for different aspects like layers, graphics, and utilizing `so` libs.
+- `assets`: Directory for storing additional project assets.
+- `rpi_projectBuild`: Directory of Yocto build for Raspberry Pi project.
 ## Project Requirements 
 ### Problem statement 
 Automatically adjust the seat for optimal comfort and safety based on the driver's physical characteristics.
@@ -11,29 +36,6 @@ Automatically adjust the seat for optimal comfort and safety based on the driver
 - Easy feedback process after positioning.
 - Comfort seat position for driving, holding the pedal, and clear vision.
 ### Guidelines
-#### Word Glossary
-Conditions:  
->H = Height  
-W = Weight  
-
-Actions:  
->SP = Standard Seat Position  
-SHF = Seat Higher and Further Front  
-SLB = Seat Lower and Further Back  
-DLS = Decreased Lumbar Support and Slightly Raised Backrest  
-ILS = Increased Lumbar Support and Slightly Reclined Backrest  
-
-
-Conditions:  
->MinAvgH = Minimum Average Height  
-MaxAvgH = Maximum Average Height  
-MinAvgW = Minimum Average Weight  
-MaxAvgW = Maximum Average Weight  
-
-Inputs:  
->UH = Undefined Height Action  
-UW = Undefined Weight Action  
-
 #### All Possible Conditions 
 - If minimum average <= weight & height =< maximum average 🡪 standard seat position.
 
@@ -59,3 +61,28 @@ UW = Undefined Weight Action
 ![System Partitioning](./assets/part.PNG)
 ### System Sequence diagram
 ![Sequence diagram](./assets/seg.png)
+
+### Project Details 
+#### Project setup tree 
+```sh
+rpi_projectBuild
+├── myLayers
+│   ├── meta-graphics
+│   ├── meta-rpihw
+│   └── meta-shell
+└── rpi3_build
+    ├── bitbake-cookerdaemon.log
+    ├── cache
+    ├── conf
+    └── tmp
+```
+#### Image development 
+My customized image builds upon the `core-image-minimal` configuration with some extras located in [`local.conf`](./rpi_projectBuild\conf\local.conf) 
+
+#### Unit test coverage report 
+can find full unit test report from [HERE](./Main%20App%20Development/Unit_tests/coverage/src/app/) 
+![Sequence diagram](./assets/Coverage1.PNG)
+
+
+
+### Project Details 
