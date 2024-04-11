@@ -1,4 +1,26 @@
 # Seat-Auto-Adjustment
+## Table of Contents
+1. [Project Objective](#project-objective)
+2. [Repo Tree](#repo-tree)
+3. [Project Requirements](#project-requirements)
+    - [Problem Statement](#problem-statement)
+    - [User Needs](#user-needs)
+    - [Guidelines](#guidelines)
+    - [Seat Parameters](#seat-parameters)
+4. [Project Architecture](#project-architecture)
+    - [System Architecture](#system-architecture)
+    - [Software Architecture](#software-architecture)
+    - [Project Layers based on Linux Layered Architecture](#project-layers-based-on-linux-layered-architecture)
+    - [System Partitioning](#system-partitioning)
+    - [System Sequence Diagram](#system-sequence-diagram)
+5. [Project Details](#project-details)
+    - [Project Setup Tree](#project-setup-tree)
+    - [Image Development](#image-development)
+    - [Unit Test Coverage Report](#unit-test-coverage-report)
+6. [Output](#output)
+7. [Contributing](#contributing)
+
+
 ## Project Objective 
 This project is a component of my on-the-job training at SeiTech Solutions. project primary objective is to gain familiarity with embedded Linux and the Yocto Project.
 
