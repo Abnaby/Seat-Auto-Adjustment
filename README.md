@@ -109,12 +109,15 @@ can find full unit test report from [HERE](./Main%20App%20Development/Unit_tests
 
 ### OUTPUT
 
-> Weston gui
-![weston output](./assets/weston.PNG)
+> Weston gui 
+![weston output](./assets/background-01.jpg)
 
-> QT5
-![QT5 output](./assets/weston.PNG)
+> Main App (Captured by mobile phone camera)
+![QT5 output](./assets/output.jpg)
+![QT5 output](./assets/fo.jpg)
 
+## Known Issues 
+you can find know issues under `issues`  labeled with the prefix [KNWN].
 
 ## Contributing  
 Bug reports, feature requests, and so on are always welcome. Feel free to leave a note in the Issues section.

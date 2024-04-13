@@ -1,0 +1,9 @@
+TEMPLATE = app
+TARGET = QT_GUI
+INCLUDPATH += .
+
+QT += gui widgets
+
+DEFINES += QT_DEPECATEDD_WARNINGS
+
+SOURCES += QT_GUI.cpp

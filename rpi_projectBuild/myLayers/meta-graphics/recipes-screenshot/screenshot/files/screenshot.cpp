@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     QPixmap screenshot = screen->grabWindow(0);
 
     // Generate a filename based on current timestamp and specify the path
-    QString fileName = 
+    QString fileName = SAVE_IN_PATH +
             QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss") + ".png";
 
     // Save the screenshot in the specified directory
